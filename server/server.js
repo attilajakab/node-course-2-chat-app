@@ -12,17 +12,19 @@ const io = socketIO(server);
 
 app.use(express.static(publicPath));
 
+// socket.emit - emits message to single connetction
+// io.emit - emits message to every connetction
+
 io.on('connection', (socket) => {
     console.log('New user connected');
 
-    socket.emit('newMessage', {
-        from: 'Gabi',
-        text: 'See you then',
-        createdAt: 123
-    });
-
     socket.on('createMessage', (message) => {
         console.log('Create message', message);
+        io.emit('newMessage', {
+            from: message.from,
+            text: message.text,
+            createdAt: (new Date()).getTime()
+        });
     });
 
     socket.on('disconnect', () => {
